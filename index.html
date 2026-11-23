@@ -57,7 +57,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:0 16px 40px}
 <body>
 <header>
   <h1>Thanksgiving Kitchen</h1>
-  <p>Everything in grams &amp; ml, oven temps for a regular oven (fan oven: about 20°C lower). Small spice amounts stay in tsp/tbsp. Your ticks and scaling are saved in this browser.</p>
+  <p>Everything in grams &amp; ml, oven temps in °F for a regular oven (fan oven: about 25°F lower). Small spice amounts stay in tsp/tbsp. Your ticks and scaling are saved in this browser.</p>
 </header>
 <nav id="nav"></nav>
 <main id="main"></main>
@@ -70,7 +70,7 @@ const R = [
 {
   id:'turkey', title:'Roast Turkey', short:'Turkey', serves:16,
   src:'https://tastesbetterfromscratch.com/easy-no-fuss-thanksgiving-turkey/', srcName:'Tastes Better From Scratch',
-  meta:['Serves 16','165°C','29–33 min per kg','Done at 74°C'],
+  meta:['Serves 16','325°F','29–33 min per kg','Done at 165°F'],
   ing:[
     {q:1,u:'',n:'turkey',note:'5.5–9 kg'},
     {q:1,u:'',n:'onions',note:'quartered'},
@@ -86,14 +86,14 @@ const R = [
   ],
   steps:[
     'If frozen: thaw in the fridge, about 24 h per 2.3 kg of bird. Give yourself an extra day to be safe.',
-    'Take the turkey out of the fridge 1 h before roasting. Put the oven rack so the bird sits in the middle, and heat the oven to 165°C.',
+    'Take the turkey out of the fridge 1 h before roasting. Put the oven rack so the bird sits in the middle, and heat the oven to 325°F.',
     'Herb butter: mix the soft butter, garlic, salt, pepper, 1 tbsp chopped rosemary, 1 tbsp chopped thyme and ½ tbsp chopped sage. The rest of the herbs go inside the bird.',
     'Pull the neck and giblets out of the cavity (keep them for the gravy). Pat the turkey completely dry with paper towels.',
     'Salt and pepper the cavity, then stuff it with the onion, lemon, apple and the leftover herbs.',
     'Loosen the skin over the breast with your fingers and push a few tbsp of herb butter under it.',
     'Tuck the wings underneath and set the turkey on a rack in a roasting pan.',
     'Microwave the rest of the herb butter for about 30 s to soften, then brush it all over the outside.',
-    'Roast about 29–33 min per kg until a thermometer in the thickest part of the thigh and breast reads 74°C. Check halfway: once the skin is golden, cover the breast with foil.',
+    'Roast about 29–33 min per kg until a thermometer in the thickest part of the thigh and breast reads 165°F. Check halfway: once the skin is golden, cover the breast with foil.',
     'Rest under foil for 20–30 min before carving. Keep all the pan drippings for the gravy.',
   ],
   tip:'Example: a 7 kg bird takes roughly 3 h 25 min – 3 h 50 min. Trust the thermometer over the clock.'
@@ -122,7 +122,7 @@ const R = [
 {
   id:'stuffing', title:'Sausage Stuffing', short:'Stuffing', serves:null,
   srcName:'@cassyeungmoney on TikTok',
-  meta:['Dry bread 150°C · 30 min','Bake 200°C · 30 min'],
+  meta:['Dry bread 300°F · 30 min','Bake 400°F · 30 min'],
   ing:[
     {q:450,u:'g',n:'French bread',note:'1 loaf, cubed and dried (or ~8 cups ready-made bread cubes)'},
     {q:550,u:'g',n:'Italian sausage',note:'5 links, casings removed'},
@@ -138,19 +138,19 @@ const R = [
     {q:null,u:'',n:'salt & pepper',note:'to taste'},
   ],
   steps:[
-    'Making your own bread cubes? Cut the bread into bite-size pieces and dry them in the oven at 150°C for 30 min.',
+    'Making your own bread cubes? Cut the bread into bite-size pieces and dry them in the oven at 300°F for 30 min.',
     'Squeeze the sausage out of the casings into a pan and fry, breaking it up, until cooked through. Take it out of the pan.',
     'Melt the butter in the same pan. Add the celery, onion and mushrooms, season with salt and pepper and cook a few minutes until softened.',
     'Add the garlic and chopped herbs and cook 2 more min.',
     'Put the sausage back in, then add the bread cubes and stock. The bread should be plump but not mushy, so add more stock if it looks dry. Season with poultry seasoning, salt and pepper.',
-    'Tip into a buttered baking dish and bake at 200°C for 30 min, or until the top is golden brown.',
+    'Tip into a buttered baking dish and bake at 400°F for 30 min, or until the top is golden brown.',
   ],
 },
 {
   id:'sweetpotato', title:'Sweet Potato Mash with Cornflake Caramel Crunch', short:'Sweet potato', serves:7,
   orig:'Sætkartöflumús með kornflexkaramellukurli',
   src:'https://grgs.is/recipe/saetkartoflumus-med-kornflexkaramellukurli/', srcName:'grgs.is',
-  meta:['Serves 6–8','180°C','~1 h + 40 min'],
+  meta:['Serves 6–8','350°F','~1 h + 40 min'],
   ing:[
     {g:'Mash',q:4,u:'',n:'sweet potatoes'},
     {g:'Mash',q:100,u:'g',n:'sugar'},
@@ -164,7 +164,7 @@ const R = [
     {g:'Cornflake caramel',q:45,u:'g',n:'cornflakes',note:'about 1½ cups, crushed'},
   ],
   steps:[
-    'Prick the sweet potatoes all over with a fork and bake at 180°C for about 1 h, until soft. Halve them and scoop out the flesh.',
+    'Prick the sweet potatoes all over with a fork and bake at 350°F for about 1 h, until soft. Halve them and scoop out the flesh.',
     'Stir the flesh together with the rest of the mash ingredients until smooth. Spread in an ovenproof dish and bake for 20 min.',
     'Meanwhile make the topping: melt the butter, stir in the brown sugar, then mix in the crushed cornflakes well.',
     'Spread the topping over the mash and bake another 20 min.',
@@ -173,7 +173,7 @@ const R = [
 {
   id:'corn', title:'Corn Pudding', short:'Corn pudding', serves:6,
   src:'https://www.allrecipes.com/recipe/13684/easy-corn-pudding/', srcName:'Allrecipes',
-  meta:['Serves 6','175°C · 30 min','2 L baking dish'],
+  meta:['Serves 6','350°F · 30 min','2 L baking dish'],
   ing:[
     {q:115,u:'g',n:'butter',note:'softened'},
     {q:430,u:'g',n:'canned sweetcorn',note:'1 can (15 oz)'},
@@ -182,7 +182,7 @@ const R = [
     {q:225,u:'g',n:'sour cream'},
   ],
   steps:[
-    'Heat the oven to 175°C. Put the butter in a 2 L baking dish and set it in the oven to melt while it heats.',
+    'Heat the oven to 350°F. Put the butter in a 2 L baking dish and set it in the oven to melt while it heats.',
     'Take the dish out once the butter has melted and stir in both cans of corn, the cornbread mix and the sour cream until well mixed.',
     'Bake for about 30 min.',
   ],
