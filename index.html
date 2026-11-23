@@ -51,6 +51,10 @@ ol li label span::before{counter-increment:s;content:counter(s)". ";font-weight:
 .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 .guests{display:flex;align-items:center;gap:8px;font-size:14px}
 .guests input{width:64px;font:inherit;padding:5px 8px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.tier{font-size:15px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin:36px 4px -6px}
+.finish{display:block;width:100%;margin-top:16px;padding:10px;font-weight:650;background:var(--ok);color:var(--card);border-color:var(--ok)}
+section.fin{padding:12px 20px;border-color:var(--ok)}
+section.fin h2{font-size:18px;color:var(--ok)}
 footer{text-align:center;color:var(--muted);font-size:13px;padding:0 16px 40px}
 </style>
 </head>
@@ -64,32 +68,118 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:0 16px 40px}
 <footer><button id="reset">Clear all ticks</button></footer>
 
 <script>
+// Recipes are listed in the order you can make them. when = section heading.
 // Add recipes here. q = amount for the original recipe (null = to taste), u = unit ('' = count).
 // Same n + u across recipes gets summed in the shopping list. shop:false = not bought (e.g. turkey drippings).
+const TURKEY_SRC = 'https://tastesbetterfromscratch.com/easy-no-fuss-thanksgiving-turkey/';
+const GRAVY_SRC = 'https://tastesbetterfromscratch.com/turkey-gravy/';
 const R = [
 {
-  id:'turkey', title:'Roast Turkey', short:'Turkey', serves:16,
-  src:'https://tastesbetterfromscratch.com/easy-no-fuss-thanksgiving-turkey/', srcName:'Tastes Better From Scratch',
-  meta:['Serves 16','325°F','29–33 min per kg','Done at 165°F'],
+  id:'turkeyprep', when:'Days ahead', title:'Turkey Prep: Thaw & Salt', short:'Turkey prep', serves:16,
+  src:TURKEY_SRC, srcName:'Tastes Better From Scratch',
+  meta:['Thaw: ~3 days ahead','Salt: day before'],
   ing:[
     {q:1,u:'',n:'turkey',note:'5.5–9 kg'},
+    {q:7,u:'tsp',n:'salt',note:'about 1 tsp per kg of turkey'},
+  ],
+  steps:[
+    'If frozen: thaw in the fridge, about 24 h per 2.3 kg (a 7 kg bird takes about 3 days). Give yourself an extra day to be safe.',
+    'Day before: unwrap the turkey, pull the neck and giblets out of the cavity (they go into the gravy base) and pat it completely dry with paper towels.',
+    'Day before: sprinkle the salt evenly all over the skin and inside the cavity, about 1 tsp per kg.',
+    'Leave it uncovered in the fridge overnight on a tray, so the skin dries out and crisps up when it roasts. Don\'t rinse it off.',
+  ],
+},
+{
+  id:'cranberry', when:'Days ahead', title:'Cranberry Sauce', short:'Cranberry', serves:10,
+  src:'https://www.allrecipes.com/recipe/9111/cranberry-sauce/', srcName:'Allrecipes',
+  meta:['Serves 10','~15 min + cooling','Makes ~540 ml'],
+  ing:[
+    {q:200,u:'g',n:'sugar'},
+    {q:240,u:'ml',n:'orange juice'},
+    {q:340,u:'g',n:'cranberries',note:'fresh or frozen'},
+  ],
+  steps:[
+    'Put the sugar and orange juice in a medium saucepan over medium heat. Stir until the sugar dissolves and it starts to simmer.',
+    'Add the cranberries and cook uncovered for 8–10 min, stirring now and then, until most of the berries pop and the sauce starts to thicken.',
+    'Pour into a bowl and let it cool, it keeps thickening as it cools. Keep covered in the fridge. Serve at room temperature or chilled.',
+  ],
+},
+{
+  id:'herbbutter', when:'Days ahead', title:'Herb Butter for the Turkey', short:'Herb butter', serves:16,
+  src:TURKEY_SRC, srcName:'Tastes Better From Scratch',
+  meta:['~10 min','Keep in the fridge'],
+  ing:[
+    {q:225,u:'g',n:'butter',note:'unsalted, softened'},
+    {q:8,u:'cloves',n:'garlic',note:'6–8, minced'},
+    {q:1,u:'tsp',n:'salt'},
+    {q:0.5,u:'tsp',n:'black pepper',note:'freshly ground'},
+    {q:1,u:'tbsp',n:'fresh rosemary',note:'chopped, from the turkey herbs',shop:false},
+    {q:1,u:'tbsp',n:'fresh thyme',note:'chopped, from the turkey herbs',shop:false},
+    {q:0.5,u:'tbsp',n:'fresh sage',note:'chopped, from the turkey herbs',shop:false},
+  ],
+  steps:[
+    'Chop the rosemary, thyme and sage from the turkey herb packs. Save the rest for inside the bird.',
+    'Mash the soft butter together with the garlic, salt, pepper and chopped herbs.',
+    'Cover and keep in the fridge. Take it out with the turkey on the day so it softens.',
+  ],
+},
+{
+  id:'gravybase', when:'Day before', title:'Gravy Base: Giblet Stock', short:'Gravy base', serves:15,
+  src:GRAVY_SRC, srcName:'Tastes Better From Scratch',
+  meta:['~1 h simmering','Optional'],
+  ing:[
+    {q:1,u:'',n:'neck & giblets',note:'from the turkey prep',shop:false},
+    {q:null,u:'',n:'water',note:'enough to cover',shop:false},
+  ],
+  steps:[
+    'Put the neck, heart and gizzard in a saucepan (skip the liver, it\'s strong). Cover with water, bring to a boil and simmer for 1 h.',
+    'Lift them out, pick the meat off the neck and dice everything small. Keep the meat and some of the cooking water in the fridge for the gravy.',
+  ],
+  tip:'The rest of this gravy is made with the turkey drippings, so it has to happen on the day while the turkey rests.'
+},
+{
+  id:'sweetpotato', when:'Day before', title:'Sweet Potato Mash with Cornflake Caramel Crunch', short:'Sweet potato', serves:7,
+  orig:'Sætkartöflumús með kornflexkaramellukurli',
+  src:'https://grgs.is/recipe/saetkartoflumus-med-kornflexkaramellukurli/', srcName:'grgs.is',
+  meta:['Serves 6–8','350°F','~1 h + 40 min'],
+  ing:[
+    {g:'Mash',q:4,u:'',n:'sweet potatoes'},
+    {g:'Mash',q:100,u:'g',n:'sugar'},
+    {g:'Mash',q:1.5,u:'tsp',n:'baking powder'},
+    {g:'Mash',q:0.25,u:'tsp',n:'salt'},
+    {g:'Mash',q:3,u:'',n:'eggs'},
+    {g:'Mash',q:100,u:'g',n:'butter',note:'melted'},
+    {g:'Mash',q:1.5,u:'tsp',n:'vanilla extract'},
+    {g:'Cornflake caramel',q:45,u:'g',n:'butter',note:'3 tbsp'},
+    {g:'Cornflake caramel',q:50,u:'g',n:'brown sugar'},
+    {g:'Cornflake caramel',q:45,u:'g',n:'cornflakes',note:'about 1½ cups, crushed'},
+  ],
+  steps:[
+    'Prick the sweet potatoes all over with a fork and bake at 350°F for about 1 h, until soft. Halve them and scoop out the flesh.',
+    'Stir the flesh together with the rest of the mash ingredients until smooth. Spread in an ovenproof dish and bake for 20 min.',
+    'Meanwhile make the topping: melt the butter, stir in the brown sugar, then mix in the crushed cornflakes well.',
+    'Spread the topping over the mash and bake another 20 min.',
+  ],
+  tip:'Make ahead: do step 1 and mix the mash the day before, and keep it covered in the fridge. On the day, bake it 20 min, then add the topping and bake 20 min more (a few extra minutes since it\'s cold).'
+},
+{
+  id:'roast', when:'Thanksgiving day', title:'Roast Turkey', short:'Turkey', serves:16,
+  src:TURKEY_SRC, srcName:'Tastes Better From Scratch',
+  meta:['Serves 16','325°F','29–33 min per kg','Done at 165°F'],
+  ing:[
+    {q:1,u:'',n:'salted turkey',note:'from the turkey prep',shop:false},
+    {q:225,u:'g',n:'herb butter',note:'from the herb butter card',shop:false},
     {q:1,u:'',n:'onions',note:'quartered'},
     {q:1,u:'',n:'lemon',note:'quartered'},
     {q:1,u:'',n:'apple',note:'any kind, quartered'},
-    {q:20,u:'g',n:'fresh rosemary'},
-    {q:20,u:'g',n:'fresh thyme'},
-    {q:20,u:'g',n:'fresh sage'},
-    {q:225,u:'g',n:'butter',note:'unsalted, softened'},
-    {q:1,u:'tsp',n:'salt'},
-    {q:0.5,u:'tsp',n:'black pepper',note:'freshly ground'},
-    {q:8,u:'cloves',n:'garlic',note:'6–8, minced'},
+    {q:20,u:'g',n:'fresh rosemary',note:'some goes in the herb butter'},
+    {q:20,u:'g',n:'fresh thyme',note:'some goes in the herb butter'},
+    {q:20,u:'g',n:'fresh sage',note:'some goes in the herb butter'},
+    {q:null,u:'',n:'black pepper',note:'for the cavity',shop:false},
   ],
   steps:[
-    'If frozen: thaw in the fridge, about 24 h per 2.3 kg of bird. Give yourself an extra day to be safe.',
-    'Take the turkey out of the fridge 1 h before roasting. Put the oven rack so the bird sits in the middle, and heat the oven to 325°F.',
-    'Herb butter: mix the soft butter, garlic, salt, pepper, 1 tbsp chopped rosemary, 1 tbsp chopped thyme and ½ tbsp chopped sage. The rest of the herbs go inside the bird.',
-    'Pull the neck and giblets out of the cavity (keep them for the gravy). Pat the turkey completely dry with paper towels.',
-    'Salt and pepper the cavity, then stuff it with the onion, lemon, apple and the leftover herbs.',
+    'Take the turkey and the herb butter out of the fridge 1 h before roasting. Put the oven rack so the bird sits in the middle, and heat the oven to 325°F.',
+    'Pepper the cavity (no more salt, it\'s already salted), then stuff it with the onion, lemon, apple and the leftover herbs.',
     'Loosen the skin over the breast with your fingers and push a few tbsp of herb butter under it.',
     'Tuck the wings underneath and set the turkey on a rack in a roasting pan.',
     'Microwave the rest of the herb butter for about 30 s to soften, then brush it all over the outside.',
@@ -99,28 +189,7 @@ const R = [
   tip:'Example: a 7 kg bird takes roughly 3 h 25 min – 3 h 50 min. Trust the thermometer over the clock.'
 },
 {
-  id:'gravy', title:'Turkey Gravy', short:'Gravy', serves:15,
-  src:'https://tastesbetterfromscratch.com/turkey-gravy/', srcName:'Tastes Better From Scratch',
-  meta:['Serves 15','About 15 min (+1 h for giblets)'],
-  ing:[
-    {q:480,u:'ml',n:'turkey drippings',note:'from the roasting pan',shop:false},
-    {q:65,u:'g',n:'plain flour'},
-    {q:960,u:'ml',n:'chicken stock',note:'low-sodium (or turkey/veg stock)'},
-    {q:null,u:'',n:'salt & pepper',note:'to taste'},
-    {q:1,u:'',n:'neck & giblets',note:'from the turkey, optional',shop:false},
-  ],
-  steps:[
-    'Optional: put the neck, heart and gizzard in a saucepan (skip the liver, it\'s strong), cover with water, bring to a boil and simmer for 1 h. Lift them out, pick the meat off the neck and dice everything small. Keep some of the water for thinning the gravy later.',
-    'Pour the pan drippings into a large bowl. Let it sit a minute so the fat rises, then skim most of the fat off the top.',
-    'Put 240 ml of drippings in a large saucepan and whisk in the flour until you have a smooth paste. If it looks greasy, add a bit more flour.',
-    'Keep whisking over the heat until the paste turns golden brown. That\'s your roux.',
-    'Whisk in the stock and another 240 ml of drippings. Cook, whisking all the time, for 5–8 min until thick, then add the giblets.',
-    'Too thick: add a splash of giblet water or drippings. Too thin: simmer 10 more min, and if it\'s still thin, stir in 1 tbsp cornflour mixed with 1 tbsp water.',
-    'Season with salt and pepper.',
-  ],
-},
-{
-  id:'stuffing', title:'Sausage Stuffing', short:'Stuffing', serves:null,
+  id:'stuffing', when:'Thanksgiving day', title:'Sausage Stuffing', short:'Stuffing', serves:null,
   srcName:'@cassyeungmoney on TikTok',
   meta:['Dry bread 300°F · 30 min','Bake 400°F · 30 min'],
   ing:[
@@ -145,33 +214,10 @@ const R = [
     'Put the sausage back in, then add the bread cubes and stock. The bread should be plump but not mushy, so add more stock if it looks dry. Season with poultry seasoning, salt and pepper.',
     'Tip into a buttered baking dish and bake at 400°F for 30 min, or until the top is golden brown.',
   ],
+  tip:'The bread cubes can be dried a few days ahead and kept in a bag.'
 },
 {
-  id:'sweetpotato', title:'Sweet Potato Mash with Cornflake Caramel Crunch', short:'Sweet potato', serves:7,
-  orig:'Sætkartöflumús með kornflexkaramellukurli',
-  src:'https://grgs.is/recipe/saetkartoflumus-med-kornflexkaramellukurli/', srcName:'grgs.is',
-  meta:['Serves 6–8','350°F','~1 h + 40 min'],
-  ing:[
-    {g:'Mash',q:4,u:'',n:'sweet potatoes'},
-    {g:'Mash',q:100,u:'g',n:'sugar'},
-    {g:'Mash',q:1.5,u:'tsp',n:'baking powder'},
-    {g:'Mash',q:0.25,u:'tsp',n:'salt'},
-    {g:'Mash',q:3,u:'',n:'eggs'},
-    {g:'Mash',q:100,u:'g',n:'butter',note:'melted'},
-    {g:'Mash',q:1.5,u:'tsp',n:'vanilla extract'},
-    {g:'Cornflake caramel',q:45,u:'g',n:'butter',note:'3 tbsp'},
-    {g:'Cornflake caramel',q:50,u:'g',n:'brown sugar'},
-    {g:'Cornflake caramel',q:45,u:'g',n:'cornflakes',note:'about 1½ cups, crushed'},
-  ],
-  steps:[
-    'Prick the sweet potatoes all over with a fork and bake at 350°F for about 1 h, until soft. Halve them and scoop out the flesh.',
-    'Stir the flesh together with the rest of the mash ingredients until smooth. Spread in an ovenproof dish and bake for 20 min.',
-    'Meanwhile make the topping: melt the butter, stir in the brown sugar, then mix in the crushed cornflakes well.',
-    'Spread the topping over the mash and bake another 20 min.',
-  ],
-},
-{
-  id:'corn', title:'Corn Pudding', short:'Corn pudding', serves:6,
+  id:'corn', when:'Thanksgiving day', title:'Corn Pudding', short:'Corn pudding', serves:6,
   src:'https://www.allrecipes.com/recipe/13684/easy-corn-pudding/', srcName:'Allrecipes',
   meta:['Serves 6','350°F · 30 min','2 L baking dish'],
   ing:[
@@ -188,22 +234,7 @@ const R = [
   ],
 },
 {
-  id:'cranberry', title:'Cranberry Sauce', short:'Cranberry', serves:10,
-  src:'https://www.allrecipes.com/recipe/9111/cranberry-sauce/', srcName:'Allrecipes',
-  meta:['Serves 10','~15 min + cooling','Makes ~540 ml'],
-  ing:[
-    {q:200,u:'g',n:'sugar'},
-    {q:240,u:'ml',n:'orange juice'},
-    {q:340,u:'g',n:'cranberries',note:'fresh or frozen'},
-  ],
-  steps:[
-    'Put the sugar and orange juice in a medium saucepan over medium heat. Stir until the sugar dissolves and it starts to simmer.',
-    'Add the cranberries and cook uncovered for 8–10 min, stirring now and then, until most of the berries pop and the sauce starts to thicken.',
-    'Pour into a bowl and let it cool, it keeps thickening as it cools. Serve at room temperature or chilled.',
-  ],
-},
-{
-  id:'mushroom', title:'Creamy Mushroom Sauce', short:'Mushroom sauce', serves:null,
+  id:'mushroom', when:'Thanksgiving day', title:'Creamy Mushroom Sauce', short:'Mushroom sauce', serves:null,
   orig:'Rjómalöguð sveppasósa',
   src:'https://yummy-iceland.blogspot.com/2021/04/rjomalogu-sveppasosa.html', srcName:'Yummy Iceland',
   meta:['~20 min','Stovetop'],
@@ -211,7 +242,7 @@ const R = [
     {q:30,u:'ml',n:'olive oil',note:'instead of rapeseed oil'},
     {q:2,u:'',n:'onions',note:'chopped'},
     {q:500,u:'g',n:'mushrooms',note:'fresh, sliced'},
-    {q:20,u:'g',n:'herb butter'},
+    {q:20,u:'g',n:'herb butter',note:'store-bought'},
     {q:3,u:'sprigs',n:'fresh thyme',note:'2–3'},
     {q:250,u:'ml',n:'cream',note:'whipping cream'},
     {q:1,u:'tsp',n:'salt',note:'coarse sea salt'},
@@ -222,6 +253,26 @@ const R = [
     'Add the mushrooms and fry them.',
     'Add the herb butter and thyme and cook over good heat for about 5 min.',
     'Turn the heat down, pour in the cream and simmer until the sauce thickens.',
+    'Season with salt and pepper.',
+  ],
+},
+{
+  id:'gravyfinish', when:'Thanksgiving day', title:'Turkey Gravy', short:'Gravy', serves:15,
+  src:GRAVY_SRC, srcName:'Tastes Better From Scratch',
+  meta:['Serves 15','~15 min, while the turkey rests'],
+  ing:[
+    {q:480,u:'ml',n:'turkey drippings',note:'from the roasting pan',shop:false},
+    {q:65,u:'g',n:'plain flour'},
+    {q:960,u:'ml',n:'chicken stock',note:'low-sodium (or turkey/veg stock)'},
+    {q:1,u:'',n:'diced giblets & stock',note:'from the gravy base, optional',shop:false},
+    {q:null,u:'',n:'salt & pepper',note:'to taste'},
+  ],
+  steps:[
+    'Pour the pan drippings into a large bowl. Let it sit a minute so the fat rises, then skim most of the fat off the top.',
+    'Put 240 ml of drippings in a large saucepan and whisk in the flour until you have a smooth paste. If it looks greasy, add a bit more flour.',
+    'Keep whisking over the heat until the paste turns golden brown. That\'s your roux.',
+    'Whisk in the stock and another 240 ml of drippings. Cook, whisking all the time, for 5–8 min until thick, then add the giblets.',
+    'Too thick: add a splash of giblet stock or drippings. Too thin: simmer 10 more min, and if it\'s still thin, stir in 1 tbsp cornflour mixed with 1 tbsp water.',
     'Season with salt and pepper.',
   ],
 },
@@ -251,7 +302,12 @@ function ingLine(i, m) {
   return q + i.n + (i.note ? ` <span class="note">· ${i.note}</span>` : '');
 }
 
+const fin = id => S.done[id + ':fin'];
+
 function recipe(r) {
+  if (fin(r.id)) return `<section id="${r.id}" class="fin">
+    <div class="bar"><h2>✓ ${r.title}</h2><button data-fin="${r.id}">Undo</button></div>
+  </section>`;
   const m = mult(r.id);
   let group, ing = '';
   r.ing.forEach((i, n) => {
@@ -277,6 +333,7 @@ function recipe(r) {
       <div><h3>Method</h3><ol>${r.steps.map((s, n) => box(`${r.id}:s${n}`, s)).join('')}</ol></div>
     </div>
     ${r.tip ? `<p class="tip">${r.tip}</p>` : ''}
+    <button class="finish" data-fin="${r.id}">✓ Finish ${r.short.toLowerCase()}</button>
   </section>`;
 }
 
@@ -305,9 +362,10 @@ function render() {
   const y = scrollY;
   document.getElementById('nav').innerHTML = `<a href="#shop">🛒 Shopping</a>` + R.map(r => {
     const done = r.steps.filter((_, n) => S.done[`${r.id}:s${n}`]).length;
-    return `<a href="#${r.id}" class="${done === r.steps.length ? 'done' : ''}">${r.short}<small>${done}/${r.steps.length}</small></a>`;
+    return `<a href="#${r.id}" class="${fin(r.id) ? 'done' : ''}">${r.short}<small>${fin(r.id) ? '✓' : done + '/' + r.steps.length}</small></a>`;
   }).join('');
-  document.getElementById('main').innerHTML = shopping() + R.map(recipe).join('');
+  document.getElementById('main').innerHTML = shopping() + R.map((r, n) =>
+    (r.when !== R[n - 1]?.when ? `<h2 class="tier">${r.when}</h2>` : '') + recipe(r)).join('');
   scrollTo(0, y);
 }
 
@@ -326,6 +384,9 @@ document.addEventListener('click', e => {
   } else if (b.dataset.guests) {
     const r = R.find(x => x.id === b.dataset.guests);
     S.mult[r.id] = Math.max(0.5, Math.round(S.guests / r.serves * 2) / 2);
+  } else if (b.dataset.fin) {
+    const k = b.dataset.fin + ':fin';
+    if (S.done[k]) delete S.done[k]; else S.done[k] = true;
   } else if (b.id === 'reset') {
     if (!confirm('Clear all ticks? Scaling stays.')) return;
     S.done = {};
