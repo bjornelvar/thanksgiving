@@ -71,23 +71,25 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:0 16px 40px}
 // Recipes are listed in the order you can make them. when = section heading.
 // Add recipes here. q = amount for the original recipe (null = to taste), u = unit ('' = count).
 // Same n + u across recipes gets summed in the shopping list. shop:false = not bought (e.g. turkey drippings).
+// buy = grams per unit, so e.g. herb sprigs are totalled in grams on the shopping list.
 const TURKEY_SRC = 'https://tastesbetterfromscratch.com/easy-no-fuss-thanksgiving-turkey/';
 const GRAVY_SRC = 'https://tastesbetterfromscratch.com/turkey-gravy/';
 const R = [
 {
-  id:'turkeyprep', when:'Days ahead', title:'Turkey Prep: Thaw & Salt', short:'Turkey prep', serves:16,
+  id:'turkeyprep', when:'Days ahead', title:'Turkey Prep: Thaw & Salt', short:'Turkey prep', serves:null,
   src:TURKEY_SRC, srcName:'Tastes Better From Scratch',
-  meta:['Thaw: ~3 days ahead','Salt: day before'],
+  meta:['10.4 kg (23 lb) bird','Thaw: ~4½ days ahead','Salt: day before'],
   ing:[
-    {q:1,u:'',n:'turkey',note:'5.5–9 kg'},
-    {q:7,u:'tsp',n:'salt',note:'about 1 tsp per kg of turkey'},
+    {q:1,u:'',n:'turkey',note:'10.4 kg (23 lb)'},
+    {q:10,u:'tsp',n:'salt',note:'about 1 tsp per kg of turkey'},
   ],
   steps:[
-    'If frozen: thaw in the fridge, about 24 h per 2.3 kg (a 7 kg bird takes about 3 days). Give yourself an extra day to be safe.',
+    'If frozen: thaw in the fridge, about 24 h per 2.3 kg, so about 4½ days for this bird.',
     'Day before: unwrap the turkey, pull the neck and giblets out of the cavity (they go into the gravy base) and pat it completely dry with paper towels.',
     'Day before: sprinkle the salt evenly all over the skin and inside the cavity, about 1 tsp per kg.',
     'Leave it uncovered in the fridge overnight on a tray, so the skin dries out and crisps up when it roasts. Don\'t rinse it off.',
   ],
+  tip:'Running out of thawing time? Thaw it in cold water instead: keep it in its wrapping, fully under water, and change the water every 30 min. It takes about 30 min per lb, so 11–12 h for this bird.'
 },
 {
   id:'cranberry', when:'Days ahead', title:'Cranberry Sauce', short:'Cranberry', serves:10,
@@ -105,17 +107,17 @@ const R = [
   ],
 },
 {
-  id:'herbbutter', when:'Days ahead', title:'Herb Butter for the Turkey', short:'Herb butter', serves:16,
+  id:'herbbutter', when:'Days ahead', title:'Herb Butter for the Turkey', short:'Herb butter', serves:null,
   src:TURKEY_SRC, srcName:'Tastes Better From Scratch',
-  meta:['~10 min','Keep in the fridge'],
+  meta:['~10 min','Keep in the fridge','×1.5 for a 23 lb bird'],
   ing:[
-    {q:225,u:'g',n:'butter',note:'unsalted, softened'},
-    {q:8,u:'cloves',n:'garlic',note:'6–8, minced'},
-    {q:1,u:'tsp',n:'salt'},
-    {q:0.5,u:'tsp',n:'black pepper',note:'freshly ground'},
-    {q:1,u:'tbsp',n:'fresh rosemary',note:'chopped, from the turkey herbs',shop:false},
-    {q:1,u:'tbsp',n:'fresh thyme',note:'chopped, from the turkey herbs',shop:false},
-    {q:0.5,u:'tbsp',n:'fresh sage',note:'chopped, from the turkey herbs',shop:false},
+    {q:340,u:'g',n:'butter',note:'unsalted, softened'},
+    {q:12,u:'cloves',n:'garlic',note:'minced'},
+    {q:1.5,u:'tsp',n:'salt'},
+    {q:0.75,u:'tsp',n:'black pepper',note:'freshly ground'},
+    {q:1.5,u:'tbsp',n:'fresh rosemary',note:'chopped, from the turkey herbs',shop:false},
+    {q:1.5,u:'tbsp',n:'fresh thyme',note:'chopped, from the turkey herbs',shop:false},
+    {q:0.75,u:'tbsp',n:'fresh sage',note:'chopped, from the turkey herbs',shop:false},
   ],
   steps:[
     'Chop the rosemary, thyme and sage from the turkey herb packs. Save the rest for inside the bird.',
@@ -163,18 +165,18 @@ const R = [
   tip:'Make ahead: do step 1 and mix the mash the day before, and keep it covered in the fridge. On the day, bake it 20 min, then add the topping and bake 20 min more (a few extra minutes since it\'s cold).'
 },
 {
-  id:'roast', when:'Thanksgiving day', title:'Roast Turkey', short:'Turkey', serves:16,
+  id:'roast', when:'Thanksgiving day', title:'Roast Turkey', short:'Turkey', serves:null,
   src:TURKEY_SRC, srcName:'Tastes Better From Scratch',
-  meta:['Serves 16','325°F','29–33 min per kg','Done at 165°F'],
+  meta:['10.4 kg (23 lb) bird','325°F','~5 h – 5 h 45 min','Done at 165°F'],
   ing:[
     {q:1,u:'',n:'salted turkey',note:'from the turkey prep',shop:false},
-    {q:225,u:'g',n:'herb butter',note:'from the herb butter card',shop:false},
-    {q:1,u:'',n:'onions',note:'quartered'},
-    {q:1,u:'',n:'lemon',note:'quartered'},
-    {q:1,u:'',n:'apple',note:'any kind, quartered'},
-    {q:20,u:'g',n:'fresh rosemary',note:'some goes in the herb butter'},
-    {q:20,u:'g',n:'fresh thyme',note:'some goes in the herb butter'},
-    {q:20,u:'g',n:'fresh sage',note:'some goes in the herb butter'},
+    {q:340,u:'g',n:'herb butter',note:'from the herb butter card',shop:false},
+    {q:2,u:'',n:'onions',note:'quartered'},
+    {q:2,u:'',n:'lemons',note:'quartered'},
+    {q:2,u:'',n:'apples',note:'any kind, quartered'},
+    {q:30,u:'g',n:'fresh rosemary',note:'some goes in the herb butter'},
+    {q:30,u:'g',n:'fresh thyme',note:'some goes in the herb butter'},
+    {q:30,u:'g',n:'fresh sage',note:'some goes in the herb butter'},
     {q:null,u:'',n:'black pepper',note:'for the cavity',shop:false},
   ],
   steps:[
@@ -186,7 +188,7 @@ const R = [
     'Roast about 29–33 min per kg until a thermometer in the thickest part of the thigh and breast reads 165°F. Check halfway: once the skin is golden, cover the breast with foil.',
     'Rest under foil for 20–30 min before carving. Keep all the pan drippings for the gravy.',
   ],
-  tip:'Example: a 7 kg bird takes roughly 3 h 25 min – 3 h 50 min. Trust the thermometer over the clock.'
+  tip:'Sized up ×1.5 from the original for a 23 lb bird. At 29–33 min per kg, 10.4 kg takes roughly 5 h – 5 h 45 min. Trust the thermometer over the clock.'
 },
 {
   id:'stuffing', when:'Thanksgiving day', title:'Sausage Stuffing', short:'Stuffing', serves:null,
@@ -200,8 +202,8 @@ const R = [
     {q:1,u:'',n:'onions',note:'1 small, diced'},
     {q:80,u:'g',n:'mushrooms',note:'minced'},
     {q:4,u:'cloves',n:'garlic'},
-    {q:2,u:'sprigs',n:'fresh rosemary'},
-    {q:3,u:'sprigs',n:'fresh thyme'},
+    {q:2,u:'sprigs',n:'fresh rosemary',buy:1},
+    {q:3,u:'sprigs',n:'fresh thyme',buy:0.5},
     {q:480,u:'ml',n:'chicken stock'},
     {q:2,u:'tbsp',n:'poultry seasoning',note:'1–2 tbsp'},
     {q:null,u:'',n:'salt & pepper',note:'to taste'},
@@ -243,7 +245,7 @@ const R = [
     {q:2,u:'',n:'onions',note:'chopped'},
     {q:500,u:'g',n:'mushrooms',note:'fresh, sliced'},
     {q:20,u:'g',n:'herb butter',note:'store-bought'},
-    {q:3,u:'sprigs',n:'fresh thyme',note:'2–3'},
+    {q:3,u:'sprigs',n:'fresh thyme',note:'2–3',buy:0.5},
     {q:250,u:'ml',n:'cream',note:'whipping cream'},
     {q:1,u:'tsp',n:'salt',note:'coarse sea salt'},
     {q:0.5,u:'tsp',n:'black pepper'},
@@ -341,9 +343,9 @@ function shopping() {
   const t = new Map();
   for (const r of R) for (const i of r.ing) {
     if (i.shop === false) continue;
-    const k = i.n + '|' + i.u;
-    const e = t.get(k) || {n: i.n, u: i.u, q: 0, from: []};
-    if (i.q != null) e.q += i.q * mult(r.id);
+    const u = i.buy ? 'g' : i.u, k = i.n + '|' + u;
+    const e = t.get(k) || {n: i.n, u, q: 0, from: []};
+    if (i.q != null) e.q += i.q * mult(r.id) * (i.buy || 1);
     e.from.push(r.short + (i.q != null ? ' ' + fmt(i.q * mult(r.id), i.u) : ''));
     t.set(k, e);
   }
