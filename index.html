@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thanksgiving Kitchen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fbf6ee;--card:#fffdf9;--ink:#2b2118;--muted:#7a6a5a;--line:#eadfce;--accent:#b4531f;--soft:#f6e3d4;--ok:#5b7a3a}
+@media (prefers-color-scheme:dark){:root{--bg:#1a1511;--card:#241e19;--ink:#f1e8dc;--muted:#a8998a;--line:#3a3129;--accent:#e58c50;--soft:#3a2a1f;--ok:#a3c476}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0;line-height:1.15}
+header{max-width:900px;margin:auto;padding:36px 16px 12px}
+h1{font-size:clamp(30px,7vw,48px);color:var(--accent)}
+header p{margin:6px 0 0;color:var(--muted)}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap;padding:10px 16px}
+nav a{display:inline-block;padding:5px 12px;margin-right:6px;border-radius:999px;background:var(--soft);color:var(--ink);text-decoration:none;font-size:14px}
+nav a small{color:var(--muted);margin-left:4px}
+nav a.done{background:var(--ok);color:var(--card)}
+nav a.done small{color:inherit}
+main{max-width:900px;margin:auto;padding:0 16px 60px}
+section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin:18px 0;scroll-margin-top:64px}
+h2{font-size:26px}
+.orig{font-style:italic;color:var(--muted);font-size:14px}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.meta span{font-size:13px;padding:2px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.src{font-size:13px;color:var(--muted)}
+.src a{color:var(--accent)}
+.scale{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 4px}
+button{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+.scale output{font-weight:700;min-width:48px;text-align:center;font-size:18px}
+.cols{display:grid;grid-template-columns:1fr 1.4fr;gap:24px;margin-top:12px}
+@media (max-width:680px){.cols{grid-template-columns:1fr}}
+h3{font-size:17px;margin:8px 0 6px}
+h4{margin:12px 0 2px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+ul,ol{list-style:none;margin:0;padding:0}
+li label{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+li:last-child label{border-bottom:0}
+input[type=checkbox]{accent-color:var(--accent);width:18px;height:18px;margin-top:3px;flex:none}
+input:checked+span{opacity:.45;text-decoration:line-through}
+.q{font-weight:650;white-space:nowrap}
+.note{color:var(--muted);font-size:14px}
+ol{counter-reset:s}
+ol li label span::before{counter-increment:s;content:counter(s)". ";font-weight:700;color:var(--accent)}
+.tip{margin:14px 0 0;padding:10px 14px;border-radius:10px;background:var(--soft);font-size:14px}
+#shop .from{display:block;color:var(--muted);font-size:13px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.guests{display:flex;align-items:center;gap:8px;font-size:14px}
+.guests input{width:64px;font:inherit;padding:5px 8px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:0 16px 40px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thanksgiving Kitchen</h1>
+  <p>Everything in grams &amp; ml, oven temps for a regular oven (fan oven: about 20°C lower). Small spice amounts stay in tsp/tbsp. Your ticks and scaling are saved in this browser.</p>
+</header>
+<nav id="nav"></nav>
+<main id="main"></main>
+<footer><button id="reset">Clear all ticks</button></footer>
+
+<script>
+// Add recipes here. q = amount for the original recipe (null = to taste), u = unit ('' = count).
+// Same n + u across recipes gets summed in the shopping list. shop:false = not bought (e.g. turkey drippings).
+const R = [
+{
+  id:'turkey', title:'Roast Turkey', short:'Turkey', serves:16,
+  src:'https://tastesbetterfromscratch.com/easy-no-fuss-thanksgiving-turkey/', srcName:'Tastes Better From Scratch',
+  meta:['Serves 16','165°C','29–33 min per kg','Done at 74°C'],
+  ing:[
+    {q:1,u:'',n:'turkey',note:'5.5–9 kg'},
+    {q:1,u:'',n:'onions',note:'quartered'},
+    {q:1,u:'',n:'lemon',note:'quartered'},
+    {q:1,u:'',n:'apple',note:'any kind, quartered'},
+    {q:20,u:'g',n:'fresh rosemary'},
+    {q:20,u:'g',n:'fresh thyme'},
+    {q:20,u:'g',n:'fresh sage'},
+    {q:225,u:'g',n:'butter',note:'unsalted, softened'},
+    {q:1,u:'tsp',n:'salt'},
+    {q:0.5,u:'tsp',n:'black pepper',note:'freshly ground'},
+    {q:8,u:'cloves',n:'garlic',note:'6–8, minced'},
+  ],
+  steps:[
+    'If frozen: thaw in the fridge, about 24 h per 2.3 kg of bird. Give yourself an extra day to be safe.',
+    'Take the turkey out of the fridge 1 h before roasting. Put the oven rack so the bird sits in the middle, and heat the oven to 165°C.',
+    'Herb butter: mix the soft butter, garlic, salt, pepper, 1 tbsp chopped rosemary, 1 tbsp chopped thyme and ½ tbsp chopped sage. The rest of the herbs go inside the bird.',
+    'Pull the neck and giblets out of the cavity (keep them for the gravy). Pat the turkey completely dry with paper towels.',
+    'Salt and pepper the cavity, then stuff it with the onion, lemon, apple and the leftover herbs.',
+    'Loosen the skin over the breast with your fingers and push a few tbsp of herb butter under it.',
+    'Tuck the wings underneath and set the turkey on a rack in a roasting pan.',
+    'Microwave the rest of the herb butter for about 30 s to soften, then brush it all over the outside.',
+    'Roast about 29–33 min per kg until a thermometer in the thickest part of the thigh and breast reads 74°C. Check halfway: once the skin is golden, cover the breast with foil.',
+    'Rest under foil for 20–30 min before carving. Keep all the pan drippings for the gravy.',
+  ],
+  tip:'Example: a 7 kg bird takes roughly 3 h 25 min – 3 h 50 min. Trust the thermometer over the clock.'
+},
+{
+  id:'gravy', title:'Turkey Gravy', short:'Gravy', serves:15,
+  src:'https://tastesbetterfromscratch.com/turkey-gravy/', srcName:'Tastes Better From Scratch',
+  meta:['Serves 15','About 15 min (+1 h for giblets)'],
+  ing:[
+    {q:480,u:'ml',n:'turkey drippings',note:'from the roasting pan',shop:false},
+    {q:65,u:'g',n:'plain flour'},
+    {q:960,u:'ml',n:'chicken stock',note:'low-sodium (or turkey/veg stock)'},
+    {q:null,u:'',n:'salt & pepper',note:'to taste'},
+    {q:1,u:'',n:'neck & giblets',note:'from the turkey, optional',shop:false},
+  ],
+  steps:[
+    'Optional: put the neck, heart and gizzard in a saucepan (skip the liver, it\'s strong), cover with water, bring to a boil and simmer for 1 h. Lift them out, pick the meat off the neck and dice everything small. Keep some of the water for thinning the gravy later.',
+    'Pour the pan drippings into a large bowl. Let it sit a minute so the fat rises, then skim most of the fat off the top.',
+    'Put 240 ml of drippings in a large saucepan and whisk in the flour until you have a smooth paste. If it looks greasy, add a bit more flour.',
+    'Keep whisking over the heat until the paste turns golden brown. That\'s your roux.',
+    'Whisk in the stock and another 240 ml of drippings. Cook, whisking all the time, for 5–8 min until thick, then add the giblets.',
+    'Too thick: add a splash of giblet water or drippings. Too thin: simmer 10 more min, and if it\'s still thin, stir in 1 tbsp cornflour mixed with 1 tbsp water.',
+    'Season with salt and pepper.',
+  ],
+},
+{
+  id:'stuffing', title:'Sausage Stuffing', short:'Stuffing', serves:null,
+  srcName:'@cassyeungmoney on TikTok',
+  meta:['Dry bread 150°C · 30 min','Bake 200°C · 30 min'],
+  ing:[
+    {q:450,u:'g',n:'French bread',note:'1 loaf, cubed and dried (or ~8 cups ready-made bread cubes)'},
+    {q:550,u:'g',n:'Italian sausage',note:'5 links, casings removed'},
+    {q:115,u:'g',n:'butter'},
+    {q:4,u:'stalks',n:'celery',note:'chopped'},
+    {q:1,u:'',n:'onions',note:'1 small, diced'},
+    {q:80,u:'g',n:'mushrooms',note:'minced'},
+    {q:4,u:'cloves',n:'garlic'},
+    {q:2,u:'sprigs',n:'fresh rosemary'},
+    {q:3,u:'sprigs',n:'fresh thyme'},
+    {q:480,u:'ml',n:'chicken stock'},
+    {q:2,u:'tbsp',n:'poultry seasoning',note:'1–2 tbsp'},
+    {q:null,u:'',n:'salt & pepper',note:'to taste'},
+  ],
+  steps:[
+    'Making your own bread cubes? Cut the bread into bite-size pieces and dry them in the oven at 150°C for 30 min.',
+    'Squeeze the sausage out of the casings into a pan and fry, breaking it up, until cooked through. Take it out of the pan.',
+    'Melt the butter in the same pan. Add the celery, onion and mushrooms, season with salt and pepper and cook a few minutes until softened.',
+    'Add the garlic and chopped herbs and cook 2 more min.',
+    'Put the sausage back in, then add the bread cubes and stock. The bread should be plump but not mushy, so add more stock if it looks dry. Season with poultry seasoning, salt and pepper.',
+    'Tip into a buttered baking dish and bake at 200°C for 30 min, or until the top is golden brown.',
+  ],
+},
+{
+  id:'sweetpotato', title:'Sweet Potato Mash with Cornflake Caramel Crunch', short:'Sweet potato', serves:7,
+  orig:'Sætkartöflumús með kornflexkaramellukurli',
+  src:'https://grgs.is/recipe/saetkartoflumus-med-kornflexkaramellukurli/', srcName:'grgs.is',
+  meta:['Serves 6–8','180°C','~1 h + 40 min'],
+  ing:[
+    {g:'Mash',q:4,u:'',n:'sweet potatoes'},
+    {g:'Mash',q:100,u:'g',n:'sugar'},
+    {g:'Mash',q:1.5,u:'tsp',n:'baking powder'},
+    {g:'Mash',q:0.25,u:'tsp',n:'salt'},
+    {g:'Mash',q:3,u:'',n:'eggs'},
+    {g:'Mash',q:100,u:'g',n:'butter',note:'melted'},
+    {g:'Mash',q:1.5,u:'tsp',n:'vanilla extract'},
+    {g:'Cornflake caramel',q:45,u:'g',n:'butter',note:'3 tbsp'},
+    {g:'Cornflake caramel',q:50,u:'g',n:'brown sugar'},
+    {g:'Cornflake caramel',q:45,u:'g',n:'cornflakes',note:'about 1½ cups, crushed'},
+  ],
+  steps:[
+    'Prick the sweet potatoes all over with a fork and bake at 180°C for about 1 h, until soft. Halve them and scoop out the flesh.',
+    'Stir the flesh together with the rest of the mash ingredients until smooth. Spread in an ovenproof dish and bake for 20 min.',
+    'Meanwhile make the topping: melt the butter, stir in the brown sugar, then mix in the crushed cornflakes well.',
+    'Spread the topping over the mash and bake another 20 min.',
+  ],
+},
+{
+  id:'corn', title:'Corn Pudding', short:'Corn pudding', serves:6,
+  src:'https://www.allrecipes.com/recipe/13684/easy-corn-pudding/', srcName:'Allrecipes',
+  meta:['Serves 6','175°C · 30 min','2 L baking dish'],
+  ing:[
+    {q:115,u:'g',n:'butter',note:'softened'},
+    {q:430,u:'g',n:'canned sweetcorn',note:'1 can (15 oz)'},
+    {q:425,u:'g',n:'canned creamed corn',note:'1 can (15 oz)'},
+    {q:240,u:'g',n:'cornbread mix',note:'1 box (8.5 oz), e.g. Jiffy'},
+    {q:225,u:'g',n:'sour cream'},
+  ],
+  steps:[
+    'Heat the oven to 175°C. Put the butter in a 2 L baking dish and set it in the oven to melt while it heats.',
+    'Take the dish out once the butter has melted and stir in both cans of corn, the cornbread mix and the sour cream until well mixed.',
+    'Bake for about 30 min.',
+  ],
+},
+{
+  id:'cranberry', title:'Cranberry Sauce', short:'Cranberry', serves:10,
+  src:'https://www.allrecipes.com/recipe/9111/cranberry-sauce/', srcName:'Allrecipes',
+  meta:['Serves 10','~15 min + cooling','Makes ~540 ml'],
+  ing:[
+    {q:200,u:'g',n:'sugar'},
+    {q:240,u:'ml',n:'orange juice'},
+    {q:340,u:'g',n:'cranberries',note:'fresh or frozen'},
+  ],
+  steps:[
+    'Put the sugar and orange juice in a medium saucepan over medium heat. Stir until the sugar dissolves and it starts to simmer.',
+    'Add the cranberries and cook uncovered for 8–10 min, stirring now and then, until most of the berries pop and the sauce starts to thicken.',
+    'Pour into a bowl and let it cool, it keeps thickening as it cools. Serve at room temperature or chilled.',
+  ],
+},
+{
+  id:'mushroom', title:'Creamy Mushroom Sauce', short:'Mushroom sauce', serves:null,
+  orig:'Rjómalöguð sveppasósa',
+  src:'https://yummy-iceland.blogspot.com/2021/04/rjomalogu-sveppasosa.html', srcName:'Yummy Iceland',
+  meta:['~20 min','Stovetop'],
+  ing:[
+    {q:30,u:'ml',n:'olive oil',note:'instead of rapeseed oil'},
+    {q:2,u:'',n:'onions',note:'chopped'},
+    {q:500,u:'g',n:'mushrooms',note:'fresh, sliced'},
+    {q:20,u:'g',n:'herb butter'},
+    {q:3,u:'sprigs',n:'fresh thyme',note:'2–3'},
+    {q:250,u:'ml',n:'cream',note:'whipping cream'},
+    {q:1,u:'tsp',n:'salt',note:'coarse sea salt'},
+    {q:0.5,u:'tsp',n:'black pepper'},
+  ],
+  steps:[
+    'Heat the olive oil in a large pan and fry the onions until translucent.',
+    'Add the mushrooms and fry them.',
+    'Add the herb butter and thyme and cook over good heat for about 5 min.',
+    'Turn the heat down, pour in the cream and simmer until the sauce thickens.',
+    'Season with salt and pepper.',
+  ],
+},
+];
+
+const KEY = 'thanksgiving-v1';
+let S = {mult:{}, done:{}, guests:15};
+try { Object.assign(S, JSON.parse(localStorage.getItem(KEY)) || {}); } catch {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} };
+const mult = id => S.mult[id] ?? 1;
+
+const FR = {0.25:'¼', 0.5:'½', 0.75:'¾'};
+function fmt(q, u) {
+  if (u === 'g' || u === 'ml') {
+    if (q >= 1000) return +(q / 1000).toFixed(2) + (u === 'g' ? ' kg' : ' l');
+    return (q >= 100 ? Math.round(q / 5) * 5 : Math.round(q)) + ' ' + u;
+  }
+  const r = Math.round(q * 4) / 4 || 0.25, w = Math.floor(r);
+  return (w || '') + (FR[r - w] || '') + (u ? ' ' + u : '');
+}
+
+const box = (k, html) =>
+  `<li><label><input type="checkbox" data-k="${k}"${S.done[k] ? ' checked' : ''}><span>${html}</span></label></li>`;
+
+function ingLine(i, m) {
+  const q = i.q == null ? '' : `<span class="q">${fmt(i.q * m, i.u)}</span> `;
+  return q + i.n + (i.note ? ` <span class="note">· ${i.note}</span>` : '');
+}
+
+function recipe(r) {
+  const m = mult(r.id);
+  let group, ing = '';
+  r.ing.forEach((i, n) => {
+    if (i.g && i.g !== group) { group = i.g; ing += `</ul><h4>${group}</h4><ul>`; }
+    ing += box(`${r.id}:i${n}`, ingLine(i, m));
+  });
+  const toGuests = r.serves
+    ? `<button data-guests="${r.id}">Scale to ${S.guests} guests</button>` : '';
+  return `<section id="${r.id}">
+    <h2>${r.title}</h2>
+    ${r.orig ? `<div class="orig">${r.orig}</div>` : ''}
+    <div class="meta">${r.meta.map(x => `<span>${x}</span>`).join('')}</div>
+    <div class="src">From ${r.src ? `<a href="${r.src}" target="_blank" rel="noopener">${r.srcName}</a>` : r.srcName}</div>
+    <div class="scale">
+      <button data-step="${r.id}" data-d="-0.5" aria-label="Scale down">−</button>
+      <output>×${m}</output>
+      <button data-step="${r.id}" data-d="0.5" aria-label="Scale up">+</button>
+      ${toGuests}
+      ${m !== 1 ? `<button data-step="${r.id}" data-d="reset">Reset</button>` : ''}
+    </div>
+    <div class="cols">
+      <div><h3>Ingredients</h3><ul>${ing}</ul></div>
+      <div><h3>Method</h3><ol>${r.steps.map((s, n) => box(`${r.id}:s${n}`, s)).join('')}</ol></div>
+    </div>
+    ${r.tip ? `<p class="tip">${r.tip}</p>` : ''}
+  </section>`;
+}
+
+function shopping() {
+  const t = new Map();
+  for (const r of R) for (const i of r.ing) {
+    if (i.shop === false) continue;
+    const k = i.n + '|' + i.u;
+    const e = t.get(k) || {n: i.n, u: i.u, q: 0, from: []};
+    if (i.q != null) e.q += i.q * mult(r.id);
+    e.from.push(r.short + (i.q != null ? ' ' + fmt(i.q * mult(r.id), i.u) : ''));
+    t.set(k, e);
+  }
+  const items = [...t.entries()].sort((a, b) => a[1].n.localeCompare(b[1].n));
+  const got = items.filter(([k]) => S.done['shop:' + k]).length;
+  return `<section id="shop">
+    <div class="bar"><h2>Shopping list</h2>
+      <label class="guests">Guests <input type="number" min="1" id="guests" value="${S.guests}"></label></div>
+    <p class="note">Totals across every recipe at its current scale. ${got}/${items.length} ticked.</p>
+    <ul>${items.map(([k, e]) => box('shop:' + k,
+      `<span class="q">${e.q ? fmt(e.q, e.u) : 'to taste'}</span> ${e.n}<span class="from">${e.from.join(' · ')}</span>`)).join('')}</ul>
+  </section>`;
+}
+
+function render() {
+  const y = scrollY;
+  document.getElementById('nav').innerHTML = `<a href="#shop">🛒 Shopping</a>` + R.map(r => {
+    const done = r.steps.filter((_, n) => S.done[`${r.id}:s${n}`]).length;
+    return `<a href="#${r.id}" class="${done === r.steps.length ? 'done' : ''}">${r.short}<small>${done}/${r.steps.length}</small></a>`;
+  }).join('');
+  document.getElementById('main').innerHTML = shopping() + R.map(recipe).join('');
+  scrollTo(0, y);
+}
+
+document.addEventListener('change', e => {
+  const k = e.target.dataset.k;
+  if (k) { S.done[k] = e.target.checked; if (!S.done[k]) delete S.done[k]; }
+  if (e.target.id === 'guests') S.guests = Math.max(1, +e.target.value || 1);
+  save(); render();
+});
+document.addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  if (b.dataset.step) {
+    const id = b.dataset.step, d = b.dataset.d;
+    S.mult[id] = d === 'reset' ? 1 : Math.max(0.5, mult(id) + +d);
+  } else if (b.dataset.guests) {
+    const r = R.find(x => x.id === b.dataset.guests);
+    S.mult[r.id] = Math.max(0.5, Math.round(S.guests / r.serves * 2) / 2);
+  } else if (b.id === 'reset') {
+    if (!confirm('Clear all ticks? Scaling stays.')) return;
+    S.done = {};
+  } else return;
+  save(); render();
+});
+
+render();
+</script>
+</body>
+</html>
